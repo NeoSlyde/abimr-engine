@@ -1,9 +1,10 @@
-package sample.graphics;
+package engine.graphics;
 
 import java.util.List;
 
 public class GraphicsWorld {
     private List<GraphicsEntity> entities;
+
     public GraphicsWorld(List<GraphicsEntity> entities) {
         this.entities = entities;
     }

@@ -1,4 +1,4 @@
-package sample.misc;
+package engine.misc;
 
 public class Vec2D {
     public final double x;

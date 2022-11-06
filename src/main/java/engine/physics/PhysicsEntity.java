@@ -1,6 +1,6 @@
-package sample.physics;
+package engine.physics;
 
-import sample.misc.Vec2D;
+import engine.misc.Vec2D;
 
 public interface PhysicsEntity {
     public long getId();

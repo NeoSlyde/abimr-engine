@@ -1,4 +1,4 @@
-package sample.physics;
+package engine.physics;
 
 public class DefaultPhysicsEngine implements PhysicsEngine {
   @Override
