@@ -1,15 +1,10 @@
 package engine.io;
 
+import java.awt.event.*;
+import java.util.function.Consumer;
+
 public interface IOEngine {
-  public void setOnLeft(KeyEvent onEvent);
+  public void setOnPress(Consumer<KeyEvent> onEvent);
 
-  public void setOnRight(KeyEvent onEvent);
-
-  public void setOnBottom(KeyEvent onEvent);
-
-  public void setOnTop(KeyEvent onEvent);
-
-  public static interface KeyEvent {
-    void onEvent(boolean pressed);
-  }
+  public void setOnRelease(Consumer<KeyEvent> onEvent);
 }

@@ -1,45 +1,41 @@
 package engine.io;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
+import java.util.function.Consumer;
 
-public class SwingIOEngine implements IOEngine, KeyListener{
+import javax.swing.JFrame;
+
+public class SwingIOEngine implements IOEngine, KeyListener {
+  public SwingIOEngine(JFrame window) {
+    window.addKeyListener(this);
+  }
+
+  private Consumer<KeyEvent> onPress = null, onRelease = null;
+
   @Override
-  public void setOnLeft(KeyEvent onEvent) {
+  public void setOnPress(Consumer<KeyEvent> onPress) {
+    this.onPress = onPress;
 
   }
 
   @Override
-  public void setOnRight(KeyEvent onEvent) {
+  public void setOnRelease(Consumer<KeyEvent> onRelease) {
+    this.onRelease = onRelease;
 
   }
 
   @Override
-  public void setOnBottom(KeyEvent onEvent) {
+  public void keyTyped(KeyEvent e) {
 
   }
 
   @Override
-  public void setOnTop(KeyEvent onEvent) {
-
+  public void keyPressed(KeyEvent e) {
+    onPress.accept(e);
   }
 
-@Override
-public void keyTyped(java.awt.event.KeyEvent e) {
-    // TODO Auto-generated method stub
-    
-}
-
-@Override
-public void keyPressed(java.awt.event.KeyEvent e) {
-    // TODO Auto-generated method stub
-    
-}
-
-@Override
-public void keyReleased(java.awt.event.KeyEvent e) {
-    // TODO Auto-generated method stub
-    
-}
-
+  @Override
+  public void keyReleased(KeyEvent e) {
+    onRelease.accept(e);
+  }
 }

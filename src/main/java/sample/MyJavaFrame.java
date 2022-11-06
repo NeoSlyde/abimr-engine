@@ -1,95 +1,58 @@
 package sample;
 
-import javax.swing.ImageIcon;
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
+import javax.swing.JPanel;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.Objects;
 
-public class MyJavaFrame extends JFrame implements KeyListener{
-
-  ImageIcon icon;
-  JLabel label;
-
-
-  public MyJavaFrame() {
-    super("Demo");
-    setSize(800, 800);
-    setLocationRelativeTo(null);
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    addKeyListener(this);
-
-    icon = new ImageIcon(getClass().getResource("sprite.png"));
-
-    label = new JLabel();
-    label.setBounds(0,0,10,10);
-    label.setIcon(icon);
-    label.setOpaque(true);
-    add(label);
-
-    setVisible(true);
-  }
+public class MyJavaFrame extends JFrame {
+  private transient BufferedImage image;
 
   public static void main(String[] args) {
     new MyJavaFrame();
   }
 
-  @Override
-  public void keyTyped(KeyEvent e) {
-    switch(e.getKeyCode()){
-      case KeyEvent.VK_LEFT:
-        label.setLocation(label.getX()-10, label.getY());
-        break;
-      case KeyEvent.VK_RIGHT:
-        label.setLocation(label.getX()+10, label.getY());
-        break;
-      case KeyEvent.VK_UP:
-        label.setLocation(label.getX(), label.getY()-10);
-        break;
-      case KeyEvent.VK_DOWN:
-        label.setLocation(label.getX(), label.getY()+10);
-        break;
+  public class MyJavaPanel extends JPanel {
+    private int x = 0;
+
+    public MyJavaPanel() {
+      new Thread(() -> {
+        while (true) {
+          x += 1;
+          repaint();
+          try {
+            Thread.sleep(1000 / 60);
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+        }
+      }).start();
+    }
+
+    @Override
+    public void paintComponent(Graphics g) {
+      super.paintComponent(g);
+      g.drawImage(image, x, 10, null);
     }
   }
 
-  @Override
-  public void keyPressed(KeyEvent e) {
-    switch(e.getKeyCode()){
-      case KeyEvent.VK_LEFT:
-        label.setLocation(label.getX()-10, label.getY());
-        break;
-      case KeyEvent.VK_RIGHT:
-        label.setLocation(label.getX()+10, label.getY());
-        break;
-      case KeyEvent.VK_UP:
-        label.setLocation(label.getX(), label.getY()-10);
-        break;
-      case KeyEvent.VK_DOWN:
-        label.setLocation(label.getX(), label.getY()+10);
-        break;
+  public MyJavaFrame() {
+    super("Swing Game ");
+    try {
+      this.image = ImageIO.read(Objects.requireNonNull(getClass().getResource("sprite.png")));
+    } catch (IOException e) {
+      e.printStackTrace();
     }
-  }
 
-  @Override
-  public void keyReleased(KeyEvent e) {
-    switch(e.getKeyCode()){
-      case KeyEvent.VK_LEFT:
-        label.setLocation(label.getX()-10, label.getY());
-        break;
-      case KeyEvent.VK_RIGHT:
-        label.setLocation(label.getX()+10, label.getY());
-        break;
-      case KeyEvent.VK_UP:
-        label.setLocation(label.getX(), label.getY()-10);
-        break;
-      case KeyEvent.VK_DOWN:
-        label.setLocation(label.getX(), label.getY()+10);
-        break;
-      case KeyEvent.VK_SPACE:
-        label.setLocation(label.getX(), label.getY()-100);
-        break;  
-    }
-  }
+    add(new MyJavaPanel());
+    setSize(800, 800);
+    setLocationRelativeTo(null);
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+    setVisible(true);
+  }
 }

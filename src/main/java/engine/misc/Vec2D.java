@@ -15,4 +15,6 @@ public record Vec2D(
     public Vec2D mult(double k) {
         return new Vec2D(k * x, k * y);
     }
+
+    public static Vec2D ZERO = new Vec2D(0, 0);
 }
