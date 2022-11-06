@@ -1,4 +1,4 @@
-package engine;
+package sample;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -25,7 +25,7 @@ public class MyJavaPanel extends JPanel {
   public MyJavaPanel() {
     Logger logger = LogManager.getLogger(this.getClass());
     logger.debug("Construct a MyJavaPanel");
-    String path = "image.png";
+    String path = "sprite.png";
     if (logger.isDebugEnabled()) {
       String message = MessageFormat.format("Loading image at path {0}", path);
       logger.debug(message);
@@ -42,6 +42,6 @@ public class MyJavaPanel extends JPanel {
   @Override
   protected void paintComponent(Graphics g) {
     super.paintComponent(g);
-    g.drawImage(image, 50, 50, null);
+    g.drawImage(image, 500, 10, null);
   }
 }
