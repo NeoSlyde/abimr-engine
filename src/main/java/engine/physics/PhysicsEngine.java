@@ -1,5 +1,7 @@
 package engine.physics;
 
+import java.util.List;
+
 public interface PhysicsEngine {
-    void update(PhysicsWorld world, double dt);
+    void update(List<? extends PhysicsEntity> entities, double dt);
 }
