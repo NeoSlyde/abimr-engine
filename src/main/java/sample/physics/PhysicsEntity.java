@@ -2,30 +2,28 @@ package sample.physics;
 
 import sample.misc.Vec2D;
 
-public class PhysicsEntity {
-    public final long id;
-    public final Vec2D position;
-    public final Vec2D size;
-    public final Vec2D velocity;
-    public final Vec2D acceleration;
-    public final double rotation;
-    public final boolean collides;
-    public final double bounceCoefficient;
+public interface PhysicsEntity {
+    public long getId();
 
-    public PhysicsEntity(long id, Vec2D position, Vec2D size, Vec2D velocity, Vec2D acceleration, double rotation, boolean collides, double bounceCoefficient) {
-        this.id = id;
-        this.position = position;
-        this.size = size;
-        this.velocity = velocity;
-        this.acceleration = acceleration;
-        this.rotation = rotation;
-        this.collides = collides;
-        this.bounceCoefficient = bounceCoefficient;
-    }
+    public Vec2D getSize();
 
-    public long getId() {
-        return id;
-    }
+    public Vec2D getPosition();
 
+    public Vec2D getVelocity();
 
+    public Vec2D getAcceleration();
+
+    public double getRotation();
+
+    public boolean isCollides();
+
+    public double getBounceCoefficient();
+
+    public void setPosition(Vec2D position);
+
+    public void setVelocity(Vec2D velocity);
+
+    public void setAcceleration(Vec2D acceleration);
+
+    public void setRotation(double rotation);
 }

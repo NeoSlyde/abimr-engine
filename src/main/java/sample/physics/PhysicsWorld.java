@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public class PhysicsWorld {
     private List<PhysicsEntity> entities;
-    
+
     public PhysicsWorld(List<PhysicsEntity> entities) {
         this.entities = entities;
     }
