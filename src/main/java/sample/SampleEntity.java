@@ -1,6 +1,7 @@
 package sample;
 
 import java.util.Random;
+import java.awt.Color;
 
 import java.io.File;
 
@@ -18,10 +19,11 @@ public class SampleEntity implements PhysicsEntity {
   private Vec2D acceleration;
   private double rotation;
   private final File texture;
+  private final Color color;
 
   public SampleEntity(
       Vec2D position, Vec2D velocity, Vec2D acceleration, double rotation,
-      Vec2D size, boolean collides, double bounceCoeficient, File texture) {
+      Vec2D size, boolean collides, double bounceCoeficient, File texture, Color color) {
     this.id = new Random().nextLong();
     this.size = size;
     this.collides = collides;
@@ -31,10 +33,11 @@ public class SampleEntity implements PhysicsEntity {
     this.acceleration = acceleration;
     this.rotation = rotation;
     this.texture = texture;
+    this.color = color;
   }
 
   public GraphicsEntity toGraphicsEntity() {
-    return new GraphicsEntity(position, size, rotation, texture, null);
+    return new GraphicsEntity(position, size, rotation, texture, color);
   }
 
   @Override

@@ -1,8 +1,10 @@
 package sample;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Stack;
 import java.awt.event.*;
+import java.awt.Color;
 import java.io.File;
 
 import engine.graphics.Camera;
@@ -28,40 +30,48 @@ public class SampleMiniGame {
 
   public void run() {
     var mainSquare = new SampleEntity(
+        new Vec2D(150, 0),
         new Vec2D(0, 0),
-        new Vec2D(0, 0),
-        new Vec2D(0, 0),
+        new Vec2D(0, 1500),
         0,
-        new Vec2D(100, 100),
-        false, 0, new File("sprite.png"));
+        new Vec2D(46, 41),
+        false, 0, new File("flop.png"), null);
 
     var world = new ArrayList<SampleEntity>();
+
+    for (int i = 0; i < 1000; ++i) {
+      double gap = 240;
+      double maxheight = 800;
+      double y = new Random().nextDouble() * (maxheight - gap);
+
+      world.add(new SampleEntity(new Vec2D(200 * (i + 2), 0),
+          new Vec2D(-120, 0),
+          Vec2D.ZERO,
+          0,
+          new Vec2D(60, y),
+          false,
+          0,
+          null, Color.DARK_GRAY));
+      world.add(new SampleEntity(new Vec2D(200 * (i + 2), y + gap),
+          new Vec2D(-120, 0),
+          Vec2D.ZERO,
+          0,
+          new Vec2D(60, 10000),
+          false,
+          0,
+          null, Color.DARK_GRAY));
+    }
     world.add(mainSquare);
 
     // IO Engine update
-    Stack<Integer> keyStack = new Stack<>();
-    Runnable updateDir = () -> {
-      if (keyStack.empty())
-        mainSquare.setVelocity(Vec2D.ZERO);
-      else if (keyStack.peek() == KeyEvent.VK_UP)
-        mainSquare.setVelocity(new Vec2D(0, -360));
-      else if (keyStack.peek() == KeyEvent.VK_RIGHT)
-        mainSquare.setVelocity(new Vec2D(360, 0));
-      else if (keyStack.peek() == KeyEvent.VK_DOWN)
-        mainSquare.setVelocity(new Vec2D(0, 360));
-      else if (keyStack.peek() == KeyEvent.VK_LEFT)
-        mainSquare.setVelocity(new Vec2D(-360, 0));
-    };
-    ioEngine.setOnPress(e -> {
-      if (keyStack.contains(e.getKeyCode()))
+    ioEngine.setOnPress((e) -> {
+      if (e.getKeyCode() != KeyEvent.VK_SPACE)
         return;
-      keyStack.push(e.getKeyCode());
-      updateDir.run();
+      mainSquare.setVelocity(mainSquare.getVelocity().add(new Vec2D(0, -1000)));
     });
 
-    ioEngine.setOnRelease(e -> {
-      keyStack.removeElement(e.getKeyCode());
-      updateDir.run();
+    ioEngine.setOnRelease((e) -> {
+
     });
 
     // Graphics engine update
@@ -70,8 +80,15 @@ public class SampleMiniGame {
         new Camera(new Vec2D(0, 0), 1)), 1000 / FPS);
 
     // Physics engine update
-    repeat(() -> physicsEngine.update(world, 1000 / PHYSICS_UPDATES_PER_SECOND),
-        1000 / PHYSICS_UPDATES_PER_SECOND);
+    repeat(() -> {
+      if (mainSquare.getVelocity().y() < -450) {
+        mainSquare.setVelocity(new Vec2D(mainSquare.getVelocity().x(), -450));
+      }
+      if (mainSquare.getVelocity().y() > 2000) {
+        mainSquare.setVelocity(new Vec2D(mainSquare.getVelocity().x(), 2000));
+      }
+      physicsEngine.update(world, 1000 / PHYSICS_UPDATES_PER_SECOND);
+    }, 1000 / PHYSICS_UPDATES_PER_SECOND);
   }
 
   public static void main(String[] args) {
