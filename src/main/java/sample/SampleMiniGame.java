@@ -1,7 +1,7 @@
 package sample;
 
 import java.util.ArrayList;
-
+import java.util.Stack;
 import java.awt.event.*;
 import java.io.File;
 
@@ -19,7 +19,7 @@ public class SampleMiniGame {
 
   private final long FPS = 60;
 
-  private final long PHYSICS_UPDATES_PER_SECOND = 30;
+  private final long PHYSICS_UPDATES_PER_SECOND = 60;
 
   public SampleMiniGame() {
     this.graphicsEngine = new SwingGraphicsEngine();
@@ -39,28 +39,39 @@ public class SampleMiniGame {
     world.add(mainSquare);
 
     // IO Engine update
+    Stack<Integer> keyStack = new Stack<>();
+    Runnable updateDir = () -> {
+      if (keyStack.empty())
+        mainSquare.setVelocity(Vec2D.ZERO);
+      else if (keyStack.peek() == KeyEvent.VK_UP)
+        mainSquare.setVelocity(new Vec2D(0, -360));
+      else if (keyStack.peek() == KeyEvent.VK_RIGHT)
+        mainSquare.setVelocity(new Vec2D(360, 0));
+      else if (keyStack.peek() == KeyEvent.VK_DOWN)
+        mainSquare.setVelocity(new Vec2D(0, 360));
+      else if (keyStack.peek() == KeyEvent.VK_LEFT)
+        mainSquare.setVelocity(new Vec2D(-360, 0));
+    };
     ioEngine.setOnPress(e -> {
-      if (e.getKeyCode() == KeyEvent.VK_UP)
-        mainSquare.setVelocity(new Vec2D(0, -2));
-      if (e.getKeyCode() == KeyEvent.VK_RIGHT)
-        mainSquare.setVelocity(new Vec2D(2, 0));
-      if (e.getKeyCode() == KeyEvent.VK_DOWN)
-        mainSquare.setVelocity(new Vec2D(0, 2));
-      if (e.getKeyCode() == KeyEvent.VK_LEFT)
-        mainSquare.setVelocity(new Vec2D(-2, 0));
+      if (keyStack.contains(e.getKeyCode()))
+        return;
+      keyStack.push(e.getKeyCode());
+      updateDir.run();
     });
 
     ioEngine.setOnRelease(e -> {
-      mainSquare.setVelocity(Vec2D.ZERO);
+      keyStack.removeElement(e.getKeyCode());
+      updateDir.run();
     });
 
     // Graphics engine update
     repeat(() -> graphicsEngine.render(
         world.stream().map(SampleEntity::toGraphicsEntity),
-        new Camera(new Vec2D(0, 0), 1)), 1000 / 60);
+        new Camera(new Vec2D(0, 0), 1)), 1000 / FPS);
 
     // Physics engine update
-    repeat(() -> physicsEngine.update(world, PHYSICS_UPDATES_PER_SECOND), 1000 / 30);
+    repeat(() -> physicsEngine.update(world, 1000 / PHYSICS_UPDATES_PER_SECOND),
+        1000 / PHYSICS_UPDATES_PER_SECOND);
   }
 
   public static void main(String[] args) {
