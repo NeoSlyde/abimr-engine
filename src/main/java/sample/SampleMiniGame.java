@@ -32,7 +32,7 @@ public class SampleMiniGame {
   public void run() {
     //wait 5 seconds
     try {
-      Thread.sleep(5000);
+      Thread.sleep(3000);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
