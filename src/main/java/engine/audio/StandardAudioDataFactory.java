@@ -8,7 +8,7 @@ public class StandardAudioDataFactory implements AudioDataFactory {
 
     @Override
     public AudioData jumpSound() {
-        return new AudioData.Builder().withPath("jump.wav").withVolume(-10.0f).build();
+        return new AudioData.Builder().withPath("jump.wav").withVolume(-20.0f).build();
     }
 
     @Override
