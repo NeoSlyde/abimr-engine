@@ -1,4 +1,4 @@
-package audio;
+package engine.audio;
 
 // This class only *represents* audio.
 // It does not deal with playing it
