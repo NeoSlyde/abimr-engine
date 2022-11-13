@@ -7,6 +7,8 @@ import java.awt.event.*;
 import java.awt.Color;
 import java.io.File;
 
+import engine.audio.AudioPlayer;
+import engine.audio.StandardAudioDataFactory;
 import engine.graphics.Camera;
 import engine.graphics.SwingGraphicsEngine;
 import engine.io.IOEngine;
@@ -29,6 +31,11 @@ public class SampleMiniGame {
   }
 
   public void run() {
+    var audioDataFactory = new StandardAudioDataFactory();
+    var audioPlayer = new AudioPlayer();
+
+    var music = audioPlayer.play(audioDataFactory.peacefulMusic());
+
     var mainSquare = new SampleEntity(
         new Vec2D(150, 0),
         new Vec2D(0, 0),
