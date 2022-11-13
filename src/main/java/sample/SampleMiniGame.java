@@ -2,7 +2,6 @@ package sample;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Stack;
 import java.awt.event.*;
 import java.awt.Color;
 import java.io.File;
@@ -31,10 +30,16 @@ public class SampleMiniGame {
   }
 
   public void run() {
+    //wait 5 seconds
+    try {
+      Thread.sleep(5000);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
     var audioDataFactory = new StandardAudioDataFactory();
     var audioPlayer = new AudioPlayer();
 
-    var music = audioPlayer.play(audioDataFactory.peacefulMusic());
+    audioPlayer.play(audioDataFactory.peacefulMusic());
 
     var mainSquare = new SampleEntity(
         new Vec2D(150, 0),
@@ -75,6 +80,7 @@ public class SampleMiniGame {
       if (e.getKeyCode() != KeyEvent.VK_SPACE)
         return;
       mainSquare.setVelocity(mainSquare.getVelocity().add(new Vec2D(0, -1000)));
+      audioPlayer.play(audioDataFactory.jumpSound());
     });
 
     ioEngine.setOnRelease((e) -> {
