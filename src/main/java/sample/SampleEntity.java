@@ -11,7 +11,7 @@ import engine.physics.PhysicsEntity;
 
 public class SampleEntity implements PhysicsEntity {
   private final long id;
-  private final Vec2D size;
+  private Vec2D size;
   private final boolean collides;
   private final double bounceCoeficient;
   private Vec2D position;
@@ -102,5 +102,9 @@ public class SampleEntity implements PhysicsEntity {
 
   public void setTexture(File texture) {
     this.texture = texture;
+  }
+
+  public void setSize(Vec2D vec2d) {
+    this.size = vec2d;
   }
 }

@@ -41,7 +41,7 @@ public class SampleMiniGame {
   public void run() {
     //wait 5 seconds
     try {
-      Thread.sleep(3000);
+      Thread.sleep(5000);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
@@ -98,6 +98,7 @@ public class SampleMiniGame {
           }
           else{
             mainSquare.setTexture(new File("gigachad.png"));
+            mainSquare.setSize(new Vec2D(118, 128));
             music.stop();
             gigaChad.setFramePosition(0);
             gigaChad.start();
