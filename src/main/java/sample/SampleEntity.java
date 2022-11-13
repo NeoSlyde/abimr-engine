@@ -18,7 +18,7 @@ public class SampleEntity implements PhysicsEntity {
   private Vec2D velocity;
   private Vec2D acceleration;
   private double rotation;
-  private final File texture;
+  private File texture;
   private final Color color;
 
   public SampleEntity(
@@ -98,5 +98,9 @@ public class SampleEntity implements PhysicsEntity {
   @Override
   public void setRotation(double rotation) {
     this.rotation = rotation;
+  }
+
+  public void setTexture(File texture) {
+    this.texture = texture;
   }
 }

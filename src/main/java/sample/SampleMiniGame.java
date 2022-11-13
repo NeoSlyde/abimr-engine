@@ -2,6 +2,9 @@ package sample;
 
 import java.util.ArrayList;
 import java.util.Random;
+
+import javax.sound.sampled.Clip;
+
 import java.awt.event.*;
 import java.awt.Color;
 import java.io.File;
@@ -24,6 +27,12 @@ public class SampleMiniGame {
 
   private final long PHYSICS_UPDATES_PER_SECOND = 60;
 
+  Clip music;
+
+  Clip gigaChad;
+
+  SampleEntity mainSquare;
+
   public SampleMiniGame() {
     this.graphicsEngine = new SwingGraphicsEngine();
     this.ioEngine = graphicsEngine.ioEngine;
@@ -39,9 +48,13 @@ public class SampleMiniGame {
     var audioDataFactory = new StandardAudioDataFactory();
     var audioPlayer = new AudioPlayer();
 
-    audioPlayer.play(audioDataFactory.peacefulMusic());
+    music = audioPlayer.play(audioDataFactory.peacefulMusic());
 
-    var mainSquare = new SampleEntity(
+    gigaChad = audioPlayer.play(audioDataFactory.gigaChad());
+
+    gigaChad.stop();
+
+    mainSquare = new SampleEntity(
         new Vec2D(150, 0),
         new Vec2D(0, 0),
         new Vec2D(0, 1500),
@@ -77,11 +90,20 @@ public class SampleMiniGame {
 
     // IO Engine update
     ioEngine.setOnPress((e) -> {
-      if (e.getKeyCode() != KeyEvent.VK_SPACE)
-        return;
-      mainSquare.setVelocity(mainSquare.getVelocity().add(new Vec2D(0, -1000)));
-      audioPlayer.play(audioDataFactory.jumpSound());
-    });
+      if (e.getKeyCode() == KeyEvent.VK_SPACE){mainSquare.setVelocity(mainSquare.getVelocity().add(new Vec2D(0, -1000)));
+        audioPlayer.play(audioDataFactory.jumpSound());}
+      else if (e.getKeyCode() == KeyEvent.VK_G){
+          if (gigaChad.isRunning()){
+            return;
+          }
+          else{
+            mainSquare.setTexture(new File("gigachad.png"));
+            music.stop();
+            gigaChad.setFramePosition(0);
+            gigaChad.start();
+          }
+      
+    }});
 
     ioEngine.setOnRelease((e) -> {
 
