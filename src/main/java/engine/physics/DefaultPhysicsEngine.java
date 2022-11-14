@@ -17,8 +17,21 @@ public record DefaultPhysicsEngine(
         var e2 = entities.get(j);
         if (!e2.isCollides() || !e1.collidesWith(e2))
           continue;
-        e1.setVelocity(e1.getVelocity().mult(-e1.getBounceCoefficient()));
-        e2.setVelocity(e2.getVelocity().mult(-e2.getBounceCoefficient()));
+
+        var xDiff = Math.min(
+            Math.abs(e1.getPosition().x() - (e2.getPosition().x() + e2.getSize().x())),
+            Math.abs(e2.getPosition().x() - (e1.getPosition().x() + e1.getSize().x())));
+        var yDiff = Math.min(
+            Math.abs(e1.getPosition().y() - (e2.getPosition().y() + e2.getSize().y())),
+            Math.abs(e2.getPosition().y() - (e1.getPosition().y() + e1.getSize().y())));
+
+        if (yDiff < xDiff) {
+          e1.setVelocity(e1.getVelocity().mapY(y -> y * -e1.getBounceCoefficient()));
+          e2.setVelocity(e2.getVelocity().mapY(y -> y * -e2.getBounceCoefficient()));
+        } else {
+          e1.setVelocity(e1.getVelocity().mapX(x -> x * -e1.getBounceCoefficient()));
+          e2.setVelocity(e2.getVelocity().mapX(x -> x * -e2.getBounceCoefficient()));
+        }
         collisionHandler.accept(e1, e2);
       }
     }
