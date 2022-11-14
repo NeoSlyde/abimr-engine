@@ -26,4 +26,11 @@ public interface PhysicsEntity {
     public void setAcceleration(Vec2D acceleration);
 
     public void setRotation(double rotation);
+
+    public default boolean collidesWith(PhysicsEntity e) {
+        return getPosition().x() < e.getPosition().x() + e.getSize().x()
+                && getPosition().x() + getSize().x() > e.getPosition().x()
+                && getPosition().y() < e.getPosition().y() + e.getSize().y()
+                && getPosition().y() + getSize().y() > e.getPosition().y();
+    }
 }
