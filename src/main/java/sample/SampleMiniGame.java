@@ -13,6 +13,7 @@ import engine.io.IOEngine;
 import engine.misc.Vec2D;
 import engine.physics.DefaultPhysicsEngine;
 import engine.physics.PhysicsEngine;
+import static engine.misc.Repeat.repeat;
 
 public class SampleMiniGame {
   private final SwingGraphicsEngine graphicsEngine;
@@ -87,7 +88,7 @@ public class SampleMiniGame {
 
     world.add(new SampleEntity(
         new Vec2D(350, 350),
-        new Vec2D(50, 100),
+        new Vec2D(180, 200),
         Vec2D.ZERO,
         0,
         new Vec2D(50, 50),
@@ -118,18 +119,5 @@ public class SampleMiniGame {
 
   public static void main(String[] args) {
     new SampleMiniGame().run();
-  }
-
-  private static void repeat(Runnable r, long delay) {
-    new Thread(() -> {
-      while (true) {
-        r.run();
-        try {
-          Thread.sleep(delay);
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        }
-      }
-    }).start();
   }
 }

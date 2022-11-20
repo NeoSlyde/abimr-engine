@@ -6,6 +6,7 @@ import java.util.function.BiConsumer;
 public record DefaultPhysicsEngine(
     BiConsumer<PhysicsEntity, PhysicsEntity> collisionHandler)
     implements PhysicsEngine {
+
   @Override
   public void update(List<? extends PhysicsEntity> entities, double dt) {
     // Collision detection
