@@ -39,7 +39,7 @@ test {
 }
 
 application {
-    mainClass = 'sample.MyJavaFrame'
+    mainClass = 'pong.MainMenu'
 }
 
 tasks.named('jar') {

@@ -1,4 +1,4 @@
-package engine.pong;
+package pong;
 
 import engine.graphics.GraphicsEntity;
 import engine.kernel.Entity;

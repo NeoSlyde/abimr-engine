@@ -1,4 +1,4 @@
-package engine.pong;
+package pong;
 
 import java.util.Arrays;
 import java.util.Stack;
@@ -8,7 +8,8 @@ import java.util.function.Consumer;
 import engine.kernel.Kernel;
 import engine.misc.Vec2D;
 import engine.physics.PhysicsEntity;
-import engine.pong.Racket.Direction;
+import pong.Racket.Direction;
+
 import java.awt.event.KeyEvent;
 
 public class Pong {
@@ -72,6 +73,9 @@ public class Pong {
     };
 
     var onCollision = (BiConsumer<PhysicsEntity, PhysicsEntity>) (e1, e2) -> {
+      if (e1 instanceof Ball && e2 instanceof Wall) {
+        System.out.println("Wall collision");
+      }
     };
 
     var kernel = new Kernel(world, onUpdate, onPress, onRelease, onCollision);
