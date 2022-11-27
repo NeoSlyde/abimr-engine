@@ -1,18 +1,27 @@
 package pong;
 
+import java.awt.Color;
+
 import engine.graphics.GraphicsEntity;
 import engine.kernel.Entity;
 import engine.misc.Vec2D;
-import java.awt.Color;
 
-public class Ball implements Entity {
-  private Vec2D position = new Vec2D(0, 0);
-  private Vec2D velocity = new Vec2D(0, 0);
+public class Score implements Entity {
+  public static enum Side {
+    LEFT, RIGHT, NONE
+  }
 
-  @Override
-  public GraphicsEntity toGraphicsEntity() {
-    return new GraphicsEntity(position, getSize(), 0,
-        null, Color.BLACK);
+  public static int SIZE = 20;
+
+  public final Vec2D pos;
+  public Side side = Side.NONE;
+
+  public Score(Vec2D pos) {
+    this.pos = pos;
+  }
+
+  public void setSide(Side side) {
+    this.side = side;
   }
 
   @Override
@@ -22,17 +31,17 @@ public class Ball implements Entity {
 
   @Override
   public Vec2D getSize() {
-    return new Vec2D(50, 50);
+    return new Vec2D(SIZE, SIZE);
   }
 
   @Override
   public Vec2D getPosition() {
-    return position;
+    return pos;
   }
 
   @Override
   public Vec2D getVelocity() {
-    return velocity;
+    return Vec2D.ZERO;
   }
 
   @Override
@@ -47,31 +56,36 @@ public class Ball implements Entity {
 
   @Override
   public boolean isCollides() {
-    return true;
+    return false;
   }
 
   @Override
   public double getBounceCoefficient() {
-    return 1.12; // Accelerate the ball a little bit at each
+    return 0;
   }
 
   @Override
   public void setPosition(Vec2D position) {
-    this.position = position;
   }
 
   @Override
   public void setVelocity(Vec2D velocity) {
-    this.velocity = velocity;
+
   }
 
   @Override
   public void setAcceleration(Vec2D acceleration) {
-    throw new RuntimeException("No Acceleration");
+
   }
 
   @Override
   public void setRotation(double rotation) {
-    throw new RuntimeException("No rotation");
+
+  }
+
+  @Override
+  public GraphicsEntity toGraphicsEntity() {
+    return new GraphicsEntity(getPosition(), getSize(), getRotation(), null,
+        side == Side.LEFT ? Color.BLUE : side == Side.RIGHT ? Color.RED : Color.GRAY);
   }
 }

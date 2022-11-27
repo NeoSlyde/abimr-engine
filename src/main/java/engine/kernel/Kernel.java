@@ -21,7 +21,7 @@ public record Kernel(
     Consumer<KeyEvent> onRelease,
     BiConsumer<PhysicsEntity, PhysicsEntity> collisionHandler) {
 
-  private static final long PHYSICS_UPDATES_PER_SECOND = 60;
+  private static final long PHYSICS_UPDATES_PER_SECOND = 120;
   private static final long FPS = 60;
 
   public void start() {

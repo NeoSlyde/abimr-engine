@@ -3,6 +3,8 @@ package pong;
 import engine.graphics.GraphicsEntity;
 import engine.kernel.Entity;
 import engine.misc.Vec2D;
+import pong.Score.Side;
+
 import java.awt.Color;
 
 public class Racket implements Entity {
@@ -14,15 +16,17 @@ public class Racket implements Entity {
 
   private Vec2D position;
   private Vec2D velocity = new Vec2D(0, 0);
+  private final Side side;
 
-  public Racket(Vec2D position) {
+  public Racket(Vec2D position, Side side) {
     this.position = position;
+    this.side = side;
   }
 
   @Override
   public GraphicsEntity toGraphicsEntity() {
     return new GraphicsEntity(position, getSize(), 0,
-        null, Color.BLACK);
+        null, side == Side.LEFT ? Color.BLUE : Color.RED);
   }
 
   public void setDirection(Direction d) {

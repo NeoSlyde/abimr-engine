@@ -12,27 +12,24 @@ public class MainMenu {
         int x_diff = 40;
         int y_diff = 180;
 
-        l.setBounds(390-x_diff, 50+y_diff, 100, 30);
+        l.setBounds(390 - x_diff, 50 + y_diff, 100, 30);
 
         f.add(l);
 
         JLabel scoreLabel = new JLabel("Score to win: ");
-        scoreLabel.setBounds(350-x_diff, 75+y_diff, 100, 30);
+        scoreLabel.setBounds(350 - x_diff, 75 + y_diff, 100, 30);
 
         f.add(scoreLabel);
 
-
         JTextField tf = new JTextField("3");
         f.add(tf);
-        tf.setBounds(350-x_diff,100+y_diff, 150,20);  
+        tf.setBounds(350 - x_diff, 100 + y_diff, 150, 20);
 
         tf.setHorizontalAlignment(SwingConstants.CENTER);
 
-
-
         JButton b = new JButton("Start Game");
 
-        b.setBounds(355-x_diff, 200+y_diff, 140, 40);
+        b.setBounds(355 - x_diff, 200 + y_diff, 140, 40);
         b.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String s = tf.getText();
@@ -48,7 +45,7 @@ public class MainMenu {
                     } else {
 
                         f.dispose();
-                        Pong.main(new String[] {s});
+                        Pong.run(scoreToWin);
                     }
                 }
             }

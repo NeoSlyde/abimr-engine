@@ -1,31 +1,47 @@
 package pong;
 
-import java.util.Arrays;
 import java.util.Stack;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import engine.kernel.Kernel;
 import engine.misc.Vec2D;
 import engine.physics.PhysicsEntity;
 import pong.Racket.Direction;
+import pong.Score.Side;
 
 import java.awt.event.KeyEvent;
 
 public class Pong {
-  public static void main(String[] args) {
+  public static void run(int scoreToWin) {
     var HEIGHT = 800;
+    var WIDTH = 800;
 
     var ball = new Ball();
-    ball.setPosition(new Vec2D(375, 375));
-    ball.setVelocity(new Vec2D(320, 160));
 
-    var leftRacket = new Racket(new Vec2D(0, 350));
-    var rightRacket = new Racket(new Vec2D(778, 350));
+    var leftRacket = new Racket(Vec2D.ZERO, Side.LEFT);
+    var rightRacket = new Racket(Vec2D.ZERO, Side.RIGHT);
 
-    var world = Arrays.asList(ball, leftRacket, rightRacket,
-        new Wall(new Vec2D(0, -Wall.HEIGHT)),
-        new Wall(new Vec2D(0, 760)));
+    var reset = (Runnable) () -> {
+      leftRacket.setPosition(new Vec2D(0, 350));
+      rightRacket.setPosition(new Vec2D(774, 350));
+      ball.setPosition(new Vec2D(375, 375));
+      ball.setVelocity(new Vec2D(320, 160));
+    };
+    reset.run();
+
+    var scoreEntities = IntStream.range(0, scoreToWin * 2)
+        .mapToObj((i) -> new Score(new Vec2D(i * 28, 0)))
+        .toList();
+
+    var world = Stream.concat(
+        Stream.of(ball, leftRacket, rightRacket,
+            new Wall(new Vec2D(0, -Wall.HEIGHT)),
+            new Wall(new Vec2D(0, 760))),
+        scoreEntities.stream())
+        .toList();
 
     var rightKeyStack = new Stack<Direction>();
     var leftKeyStack = new Stack<Direction>();
@@ -67,15 +83,26 @@ public class Pong {
 
     var onUpdate = (Runnable) () -> {
       rightRacket.setPosition(
-          rightRacket.getPosition().mapY(y -> Math.min(Math.max(y, 0), HEIGHT - rightRacket.getSize().y())));
+          rightRacket.getPosition().mapY(y -> Math.min(Math.max(y, 0), HEIGHT - rightRacket.getSize().y() - 40)));
       leftRacket.setPosition(
-          leftRacket.getPosition().mapY(y -> Math.min(Math.max(y, 0), HEIGHT - leftRacket.getSize().y())));
+          leftRacket.getPosition().mapY(y -> Math.min(Math.max(y, 0), HEIGHT - leftRacket.getSize().y() - 40)));
+
+      if (ball.getPosition().x() < 0) {
+        reset.run();
+        scoreEntities.stream().filter(e -> e.side == Side.NONE).findFirst().get().setSide(Side.RIGHT);
+        if (scoreEntities.stream().filter(e -> e.side == Side.RIGHT).count() >= scoreToWin)
+          System.exit(0);
+      }
+      if (ball.getPosition().x() + ball.getSize().x() > WIDTH) {
+        reset.run();
+        scoreEntities.stream().filter(e -> e.side == Side.NONE).findFirst().get().setSide(Side.LEFT);
+        if (scoreEntities.stream().filter(e -> e.side == Side.LEFT).count() >= scoreToWin)
+          System.exit(0);
+      }
     };
 
     var onCollision = (BiConsumer<PhysicsEntity, PhysicsEntity>) (e1, e2) -> {
-      if (e1 instanceof Ball && e2 instanceof Wall) {
-        System.out.println("Wall collision");
-      }
+
     };
 
     var kernel = new Kernel(world, onUpdate, onPress, onRelease, onCollision);
