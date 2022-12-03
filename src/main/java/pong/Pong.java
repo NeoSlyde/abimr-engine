@@ -30,8 +30,8 @@ public class Pong {
     var rightRacket = new Racket(Vec2D.ZERO, Side.RIGHT);
 
     var reset = (Runnable) () -> {
-      leftRacket.setPosition(new Vec2D(0, 350));
-      rightRacket.setPosition(new Vec2D(774, 350));
+      leftRacket.setPosition(new Vec2D(10, 350));
+      rightRacket.setPosition(new Vec2D(764, 350));
       ball.setPosition(new Vec2D(375, 375));
       ball.setVelocity(new Vec2D(320, 160));
     };
@@ -107,9 +107,11 @@ public class Pong {
     };
 
     var onCollision = (BiConsumer<PhysicsEntity, PhysicsEntity>) (e1, e2) -> {
-      //collision between ball and racket
       if (e1 instanceof Ball && e2 instanceof Racket) {
         if(e1.getPosition().x() < e2.getPosition().x()) {
+          AudioPlayer.play(audioDataFactory.bounce());
+        }
+        if(e1.getPosition().x() > e2.getPosition().x()) {
           AudioPlayer.play(audioDataFactory.bounce());
         }
     };};

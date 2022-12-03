@@ -4,6 +4,7 @@ import engine.graphics.GraphicsEntity;
 import engine.kernel.Entity;
 import engine.misc.Vec2D;
 import java.awt.Color;
+import java.io.File;
 
 public class Ball implements Entity {
   private Vec2D position = new Vec2D(0, 0);
@@ -12,7 +13,7 @@ public class Ball implements Entity {
   @Override
   public GraphicsEntity toGraphicsEntity() {
     return new GraphicsEntity(position, getSize(), 0,
-        null, Color.BLACK);
+        new File("ball.png"), Color.BLACK);
   }
 
   @Override
@@ -22,7 +23,7 @@ public class Ball implements Entity {
 
   @Override
   public Vec2D getSize() {
-    return new Vec2D(50, 50);
+    return new Vec2D(25, 25);
   }
 
   @Override
