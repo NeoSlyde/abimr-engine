@@ -93,12 +93,14 @@ public class Pong {
           leftRacket.getPosition().mapY(y -> Math.min(Math.max(y, 0), HEIGHT - leftRacket.getSize().y() - 40)));
 
       if (ball.getPosition().x() < 0) {
+        AudioPlayer.play(audioDataFactory.score());
         reset.run();
         scoreEntities.stream().filter(e -> e.side == Side.NONE).findFirst().get().setSide(Side.RIGHT);
         if (scoreEntities.stream().filter(e -> e.side == Side.RIGHT).count() >= scoreToWin)
           System.exit(0);
       }
       if (ball.getPosition().x() + ball.getSize().x() > WIDTH) {
+        AudioPlayer.play(audioDataFactory.score());
         reset.run();
         scoreEntities.stream().filter(e -> e.side == Side.NONE).findFirst().get().setSide(Side.LEFT);
         if (scoreEntities.stream().filter(e -> e.side == Side.LEFT).count() >= scoreToWin)
@@ -108,13 +110,13 @@ public class Pong {
 
     var onCollision = (BiConsumer<PhysicsEntity, PhysicsEntity>) (e1, e2) -> {
       if (e1 instanceof Ball && e2 instanceof Racket) {
-        if(e1.getPosition().x() < e2.getPosition().x()) {
           AudioPlayer.play(audioDataFactory.bounce());
-        }
-        if(e1.getPosition().x() > e2.getPosition().x()) {
-          AudioPlayer.play(audioDataFactory.bounce());
-        }
-    };};
+      };
+
+      if(e1 instanceof Ball && e2 instanceof Wall) {
+          AudioPlayer.play(audioDataFactory.wall());
+      }
+  };
 
     var kernel = new Kernel(world, onUpdate, onPress, onRelease, onCollision);
     kernel.start();

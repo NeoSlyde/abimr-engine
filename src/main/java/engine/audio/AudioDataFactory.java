@@ -8,4 +8,8 @@ public interface AudioDataFactory {
     AudioData gigaChad();
 
     AudioData bounce();
+
+    AudioData score();
+
+    AudioData wall();
 }

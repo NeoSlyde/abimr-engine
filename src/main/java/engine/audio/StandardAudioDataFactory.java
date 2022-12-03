@@ -21,4 +21,14 @@ public class StandardAudioDataFactory implements AudioDataFactory {
         return new AudioData.Builder().withPath("bounce.wav").withVolume(-10.0f).build();
     }
 
+    @Override
+    public AudioData score() {
+        return new AudioData.Builder().withPath("score.wav").withVolume(-10.0f).build();
+    }
+
+    @Override
+    public AudioData wall() {
+        return new AudioData.Builder().withPath("wall.wav").withVolume(-10.0f).build();
+    }
+
 }
