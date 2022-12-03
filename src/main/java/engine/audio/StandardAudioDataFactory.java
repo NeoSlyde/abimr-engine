@@ -16,4 +16,9 @@ public class StandardAudioDataFactory implements AudioDataFactory {
         return new AudioData.Builder().withPath("gigachad.wav").withVolume(-10.0f).build();
     }
 
+    @Override
+    public AudioData bounce() {
+        return new AudioData.Builder().withPath("bounce.wav").withVolume(-10.0f).build();
+    }
+
 }

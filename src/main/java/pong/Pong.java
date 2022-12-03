@@ -6,6 +6,8 @@ import java.util.function.Consumer;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import engine.audio.AudioPlayer;
+import engine.audio.StandardAudioDataFactory;
 import engine.kernel.Kernel;
 import engine.misc.Vec2D;
 import engine.physics.PhysicsEntity;
@@ -18,6 +20,9 @@ public class Pong {
   public static void run(int scoreToWin) {
     var HEIGHT = 800;
     var WIDTH = 800;
+
+    var AudioPlayer = new AudioPlayer();
+    var audioDataFactory = new StandardAudioDataFactory();
 
     var ball = new Ball();
 
@@ -102,8 +107,12 @@ public class Pong {
     };
 
     var onCollision = (BiConsumer<PhysicsEntity, PhysicsEntity>) (e1, e2) -> {
-
-    };
+      //collision between ball and racket
+      if (e1 instanceof Ball && e2 instanceof Racket) {
+        if(e1.getPosition().x() < e2.getPosition().x()) {
+          AudioPlayer.play(audioDataFactory.bounce());
+        }
+    };};
 
     var kernel = new Kernel(world, onUpdate, onPress, onRelease, onCollision);
     kernel.start();

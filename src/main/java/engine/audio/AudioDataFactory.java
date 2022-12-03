@@ -6,4 +6,6 @@ public interface AudioDataFactory {
     AudioData jumpSound();
 
     AudioData gigaChad();
+
+    AudioData bounce();
 }
