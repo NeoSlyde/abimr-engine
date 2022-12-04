@@ -20,6 +20,7 @@ public class Pong {
   public static void run(int scoreToWin) {
     var HEIGHT = 800;
     var WIDTH = 800;
+    var BALL_INITIAL_SPEED = 320;
 
     var AudioPlayer = new AudioPlayer();
     var audioDataFactory = new StandardAudioDataFactory();
@@ -30,31 +31,26 @@ public class Pong {
     var rightRacket = new Racket(Vec2D.ZERO, Side.RIGHT);
 
     var start = (Runnable) () -> {
-      var random = (int) (Math.random() * 150 + 150);
-      var randomDirection = (int) (Math.random() * 2) * 2 - 1;
       leftRacket.setPosition(new Vec2D(10, 350));
       rightRacket.setPosition(new Vec2D(764, 350));
       ball.setPosition(new Vec2D(375, 375));
-      ball.setVelocity(new Vec2D(randomDirection*320, random));
-    };
-
-    var resetBlue = (Runnable) () -> {
-      var random = (int) (Math.random() * 150 + 150);
-      leftRacket.setPosition(new Vec2D(10, 350));
-      rightRacket.setPosition(new Vec2D(764, 350));
-      ball.setPosition(new Vec2D(375, 375));
-      ball.setVelocity(new Vec2D(-320, random));
-    };
-
-    var resetRed = (Runnable) () -> {
-      var random = (int) (Math.random() * 150 + 150);
-      leftRacket.setPosition(new Vec2D(10, 350));
-      rightRacket.setPosition(new Vec2D(764, 350));
-      ball.setPosition(new Vec2D(375, 375));
-      ball.setVelocity(new Vec2D(320, random));
+      ball.setVelocity(Vec2D.ZERO);
     };
 
     start.run();
+    new Thread(() -> {
+      try {
+        Thread.sleep(1000);
+      } catch (InterruptedException e3) {
+        e3.printStackTrace();
+      }
+
+      var randomAngle = (Math.random() - 0.5) * Math.PI / 2;
+      var randomDir = Math.random() > 0.5 ? -1 : 1;
+
+      ball.setVelocity(new Vec2D(randomDir * Math.cos(randomAngle), Math.sin(randomAngle))
+          .withLength(BALL_INITIAL_SPEED));
+    }).start();
 
     var scoreEntities = IntStream.range(0, scoreToWin * 2)
         .mapToObj((i) -> new Score(new Vec2D(i * 28, 0)))
@@ -91,6 +87,14 @@ public class Pong {
       if (e.getKeyCode() == KeyEvent.VK_DOWN && !rightKeyStack.contains(Direction.DOWN))
         rightKeyStack.add(Direction.DOWN);
       updateRackets.run();
+
+      if (ball.getVelocity().equals(Vec2D.ZERO)) {
+        var side = scoreEntities.stream().reduce((f, s) -> s.side == Side.NONE ? f : s).get().side;
+        if (side == Side.RIGHT && (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN))
+          ball.setVelocity(new Vec2D(1, Math.random() - 0.5).withLength(BALL_INITIAL_SPEED));
+        if (side == Side.LEFT && (e.getKeyCode() == KeyEvent.VK_Z || e.getKeyCode() == KeyEvent.VK_S))
+          ball.setVelocity(new Vec2D(-1, Math.random() - 0.5).withLength(BALL_INITIAL_SPEED));
+      }
     };
 
     var onRelease = (Consumer<KeyEvent>) (e) -> {
@@ -113,14 +117,15 @@ public class Pong {
 
       if (ball.getPosition().x() < 0) {
         AudioPlayer.play(audioDataFactory.score());
-        resetRed.run();
+        start.run();
+
         scoreEntities.stream().filter(e -> e.side == Side.NONE).findFirst().get().setSide(Side.RIGHT);
         if (scoreEntities.stream().filter(e -> e.side == Side.RIGHT).count() >= scoreToWin)
           System.exit(0);
       }
       if (ball.getPosition().x() + ball.getSize().x() > WIDTH) {
         AudioPlayer.play(audioDataFactory.score());
-        resetBlue.run();
+        start.run();
         scoreEntities.stream().filter(e -> e.side == Side.NONE).findFirst().get().setSide(Side.LEFT);
         if (scoreEntities.stream().filter(e -> e.side == Side.LEFT).count() >= scoreToWin)
           System.exit(0);
@@ -129,13 +134,13 @@ public class Pong {
 
     var onCollision = (BiConsumer<PhysicsEntity, PhysicsEntity>) (e1, e2) -> {
       if (e1 instanceof Ball && e2 instanceof Racket) {
-          AudioPlayer.play(audioDataFactory.bounce());
+        AudioPlayer.play(audioDataFactory.bounce());
       }
 
-      if(e1 instanceof Ball && e2 instanceof Wall) {
-          AudioPlayer.play(audioDataFactory.wall());
+      if (e1 instanceof Ball && e2 instanceof Wall) {
+        AudioPlayer.play(audioDataFactory.wall());
       }
-  };
+    };
 
     var kernel = new Kernel(world, onUpdate, onPress, onRelease, onCollision);
     kernel.start();

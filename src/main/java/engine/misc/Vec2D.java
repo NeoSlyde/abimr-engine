@@ -6,6 +6,14 @@ public record Vec2D(
         double x,
         double y) {
 
+    public double length() {
+        return Math.sqrt(x * x + y * y);
+    }
+
+    public Vec2D withLength(double len) {
+        return this.mult(len / this.length());
+    }
+
     public Vec2D add(Vec2D o) {
         return new Vec2D(x + o.x, y + o.y);
     }
