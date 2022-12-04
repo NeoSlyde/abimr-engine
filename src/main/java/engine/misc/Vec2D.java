@@ -10,6 +10,14 @@ public record Vec2D(
         return Math.sqrt(x * x + y * y);
     }
 
+    public Vec2D setAngle(double radians) {
+        return new Vec2D(Math.cos(radians), Math.sin(radians)).withLength(this.length());
+    }
+
+    public double angle() {
+        return Math.atan2(y, x);
+    }
+
     public Vec2D withLength(double len) {
         return this.mult(len / this.length());
     }

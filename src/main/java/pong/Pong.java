@@ -22,7 +22,7 @@ public class Pong {
     var WIDTH = 800;
     var BALL_INITIAL_SPEED = 320;
 
-    var AudioPlayer = new AudioPlayer();
+    var audioPlayer = new AudioPlayer();
     var audioDataFactory = new StandardAudioDataFactory();
 
     var ball = new Ball();
@@ -52,7 +52,7 @@ public class Pong {
           .withLength(BALL_INITIAL_SPEED));
     }).start();
 
-    AudioPlayer.play(audioDataFactory.music());
+    audioPlayer.play(audioDataFactory.music());
 
     var scoreEntities = IntStream.range(0, scoreToWin * 2)
         .mapToObj((i) -> new Score(new Vec2D(i * 28, 0)))
@@ -118,7 +118,7 @@ public class Pong {
           leftRacket.getPosition().mapY(y -> Math.min(Math.max(y, 0), HEIGHT - leftRacket.getSize().y() - 40)));
 
       if (ball.getPosition().x() < 0) {
-        AudioPlayer.play(audioDataFactory.score());
+        audioPlayer.play(audioDataFactory.score());
         start.run();
 
         scoreEntities.stream().filter(e -> e.side == Side.NONE).findFirst().get().setSide(Side.RIGHT);
@@ -126,7 +126,7 @@ public class Pong {
           System.exit(0);
       }
       if (ball.getPosition().x() + ball.getSize().x() > WIDTH) {
-        AudioPlayer.play(audioDataFactory.score());
+        audioPlayer.play(audioDataFactory.score());
         start.run();
         scoreEntities.stream().filter(e -> e.side == Side.NONE).findFirst().get().setSide(Side.LEFT);
         if (scoreEntities.stream().filter(e -> e.side == Side.LEFT).count() >= scoreToWin)
@@ -135,12 +135,17 @@ public class Pong {
     };
 
     var onCollision = (BiConsumer<PhysicsEntity, PhysicsEntity>) (e1, e2) -> {
-      if (e1 instanceof Ball && e2 instanceof Racket) {
-        AudioPlayer.play(audioDataFactory.bounce());
-      }
+      if (e1 instanceof Ball && e2 instanceof Racket)
+        audioPlayer.play(audioDataFactory.bounce());
+      if (e1 instanceof Ball && e2 instanceof Wall)
+        audioPlayer.play(audioDataFactory.wall());
 
-      if (e1 instanceof Ball && e2 instanceof Wall) {
-        AudioPlayer.play(audioDataFactory.wall());
+      if (e1 instanceof Ball && e2 instanceof Racket) {
+        var pos = e1.getPosition().add(e1.getSize().mult(0.5))
+            .add(e2.getPosition().neg()).y() / e2.getSize().y()
+            * 2 - 1;
+        var newAngle = ball.getVelocity().angle() + pos * Math.PI * 0.1;
+        ball.setVelocity(ball.getVelocity().setAngle(newAngle));
       }
     };
 
