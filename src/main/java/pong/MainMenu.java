@@ -1,6 +1,5 @@
 package pong;
 
-import java.awt.event.*;
 import javax.swing.*;
 
 public class MainMenu {
@@ -30,25 +29,34 @@ public class MainMenu {
         JButton b = new JButton("Start Game");
 
         b.setBounds(355 - x_diff, 200 + y_diff, 140, 40);
-        b.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String s = tf.getText();
-
-                if (s == null || s.matches(".*[a-zA-Z]+.*") || s.equals("")) {
-                    JOptionPane.showMessageDialog(f, "Please enter a number");
-                } else {
-
-                    int scoreToWin = Integer.parseInt(s);
-
-                    if (scoreToWin < 1) {
-                        JOptionPane.showMessageDialog(f, "Please enter a number greater than 0");
-                    } else {
-
-                        f.dispose();
-                        Pong.run(scoreToWin);
-                    }
-                }
+        b.addActionListener(e -> {
+            String s = tf.getText();
+            if (s == null || s.matches(".*[a-zA-Z]+.*") || s.equals("")) {
+                JOptionPane.showMessageDialog(f, "Please enter a number");
+                return;
             }
+            int scoreToWin = Integer.parseInt(s);
+            if (scoreToWin < 1) {
+                JOptionPane.showMessageDialog(f, "Please enter a number greater than 0");
+            } else {
+                f.dispose();
+                Pong.run(scoreToWin, (winner) -> {
+                    JFrame winFrame = new JFrame("WIN!");
+                    winFrame.setSize(800, 800);
+                    winFrame.setVisible(true);
+                    var winnerText = new JLabel(winner.toString() + " WON!");
+                    winFrame.add(winnerText);
+                    new Thread(() -> {
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e1) {
+                            e1.printStackTrace();
+                        }
+                        System.exit(0);
+                    }).start();
+                });
+            }
+
         });
         f.add(b);
         f.setSize(800, 800);

@@ -17,7 +17,7 @@ import pong.Score.Side;
 import java.awt.event.KeyEvent;
 
 public class Pong {
-  public static void run(int scoreToWin) {
+  public static void run(int scoreToWin, Consumer<Side> onWin) {
     var HEIGHT = 800;
     var WIDTH = 800;
     var BALL_INITIAL_SPEED = 320;
@@ -123,14 +123,14 @@ public class Pong {
 
         scoreEntities.stream().filter(e -> e.side == Side.NONE).findFirst().get().setSide(Side.RIGHT);
         if (scoreEntities.stream().filter(e -> e.side == Side.RIGHT).count() >= scoreToWin)
-          System.exit(0);
+          onWin.accept(Side.RIGHT);
       }
       if (ball.getPosition().x() + ball.getSize().x() > WIDTH) {
         audioPlayer.play(audioDataFactory.score());
         start.run();
         scoreEntities.stream().filter(e -> e.side == Side.NONE).findFirst().get().setSide(Side.LEFT);
         if (scoreEntities.stream().filter(e -> e.side == Side.LEFT).count() >= scoreToWin)
-          System.exit(0);
+          onWin.accept(Side.LEFT);
       }
     };
 
