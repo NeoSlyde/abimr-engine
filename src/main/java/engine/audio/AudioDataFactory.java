@@ -1,7 +1,7 @@
 package engine.audio;
 
 public interface AudioDataFactory {
-    AudioData peacefulMusic();
+    AudioData music();
 
     AudioData jumpSound();
 

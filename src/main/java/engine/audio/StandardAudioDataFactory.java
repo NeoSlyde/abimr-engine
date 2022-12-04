@@ -2,7 +2,7 @@ package engine.audio;
 
 public class StandardAudioDataFactory implements AudioDataFactory {
     @Override
-    public AudioData peacefulMusic() {
+    public AudioData music() {
         return new AudioData.Builder().withPath("music.wav").withVolume(-20.0f).withLoop(true).build();
     }
 
