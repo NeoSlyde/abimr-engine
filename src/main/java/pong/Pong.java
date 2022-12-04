@@ -29,13 +29,32 @@ public class Pong {
     var leftRacket = new Racket(Vec2D.ZERO, Side.LEFT);
     var rightRacket = new Racket(Vec2D.ZERO, Side.RIGHT);
 
-    var reset = (Runnable) () -> {
+    var start = (Runnable) () -> {
+      var random = (int) (Math.random() * 150 + 150);
+      var randomDirection = (int) (Math.random() * 2) * 2 - 1;
       leftRacket.setPosition(new Vec2D(10, 350));
       rightRacket.setPosition(new Vec2D(764, 350));
       ball.setPosition(new Vec2D(375, 375));
-      ball.setVelocity(new Vec2D(320, 160));
+      ball.setVelocity(new Vec2D(randomDirection*320, random));
     };
-    reset.run();
+
+    var resetBlue = (Runnable) () -> {
+      var random = (int) (Math.random() * 150 + 150);
+      leftRacket.setPosition(new Vec2D(10, 350));
+      rightRacket.setPosition(new Vec2D(764, 350));
+      ball.setPosition(new Vec2D(375, 375));
+      ball.setVelocity(new Vec2D(-320, random));
+    };
+
+    var resetRed = (Runnable) () -> {
+      var random = (int) (Math.random() * 150 + 150);
+      leftRacket.setPosition(new Vec2D(10, 350));
+      rightRacket.setPosition(new Vec2D(764, 350));
+      ball.setPosition(new Vec2D(375, 375));
+      ball.setVelocity(new Vec2D(320, random));
+    };
+
+    start.run();
 
     var scoreEntities = IntStream.range(0, scoreToWin * 2)
         .mapToObj((i) -> new Score(new Vec2D(i * 28, 0)))
@@ -94,14 +113,14 @@ public class Pong {
 
       if (ball.getPosition().x() < 0) {
         AudioPlayer.play(audioDataFactory.score());
-        reset.run();
+        resetRed.run();
         scoreEntities.stream().filter(e -> e.side == Side.NONE).findFirst().get().setSide(Side.RIGHT);
         if (scoreEntities.stream().filter(e -> e.side == Side.RIGHT).count() >= scoreToWin)
           System.exit(0);
       }
       if (ball.getPosition().x() + ball.getSize().x() > WIDTH) {
         AudioPlayer.play(audioDataFactory.score());
-        reset.run();
+        resetBlue.run();
         scoreEntities.stream().filter(e -> e.side == Side.NONE).findFirst().get().setSide(Side.LEFT);
         if (scoreEntities.stream().filter(e -> e.side == Side.LEFT).count() >= scoreToWin)
           System.exit(0);
@@ -111,7 +130,7 @@ public class Pong {
     var onCollision = (BiConsumer<PhysicsEntity, PhysicsEntity>) (e1, e2) -> {
       if (e1 instanceof Ball && e2 instanceof Racket) {
           AudioPlayer.play(audioDataFactory.bounce());
-      };
+      }
 
       if(e1 instanceof Ball && e2 instanceof Wall) {
           AudioPlayer.play(audioDataFactory.wall());
