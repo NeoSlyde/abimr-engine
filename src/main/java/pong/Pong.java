@@ -56,6 +56,8 @@ public class Pong {
 
     start.run();
 
+    AudioPlayer.play(audioDataFactory.music());
+
     var scoreEntities = IntStream.range(0, scoreToWin * 2)
         .mapToObj((i) -> new Score(new Vec2D(i * 28, 0)))
         .toList();
