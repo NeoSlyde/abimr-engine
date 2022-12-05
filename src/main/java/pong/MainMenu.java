@@ -74,8 +74,7 @@ public class MainMenu {
             winnerText.setForeground(java.awt.Color.BLUE);
             winnerText.setBounds(350, 100 , 100, 30);
         }
-
-        int x_diff = 40;
+        
         int y_diff = 180;
 
         JLabel scoreLabel = new JLabel("Score to win: ");
