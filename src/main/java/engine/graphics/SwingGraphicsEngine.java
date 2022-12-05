@@ -16,8 +16,10 @@ public class SwingGraphicsEngine implements GraphicsEngine {
 
   private final JPanel panel;
 
+  private final JFrame window;
+
   public SwingGraphicsEngine() {
-    var window = new JFrame();
+    window = new JFrame();
     this.panel = new JPanel() {
       @Override
       protected void paintComponent(Graphics g) {
@@ -63,6 +65,10 @@ public class SwingGraphicsEngine implements GraphicsEngine {
       });
     };
     this.panel.repaint();
+  }
+
+  public void dispose(){
+    this.window.dispose();
   }
 
 }

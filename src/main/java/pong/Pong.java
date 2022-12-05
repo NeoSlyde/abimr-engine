@@ -6,8 +6,11 @@ import java.util.function.Consumer;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import javax.sound.sampled.Clip;
+
 import engine.audio.AudioPlayer;
 import engine.audio.StandardAudioDataFactory;
+import engine.graphics.SwingGraphicsEngine;
 import engine.kernel.Kernel;
 import engine.misc.Vec2D;
 import engine.physics.PhysicsEntity;
@@ -21,8 +24,8 @@ public class Pong {
     var HEIGHT = 800;
     var WIDTH = 800;
     var BALL_INITIAL_SPEED = 320;
-
     var audioPlayer = new AudioPlayer();
+    var graphicsEngine = new SwingGraphicsEngine();
     var audioDataFactory = new StandardAudioDataFactory();
 
     var ball = new Ball();
@@ -52,7 +55,7 @@ public class Pong {
           .withLength(BALL_INITIAL_SPEED));
     }).start();
 
-    audioPlayer.play(audioDataFactory.music());
+    Clip musicPlayer = audioPlayer.play(audioDataFactory.music());
 
     var scoreEntities = IntStream.range(0, scoreToWin * 2)
         .mapToObj((i) -> new Score(new Vec2D(i * 28, 0)))
@@ -122,15 +125,21 @@ public class Pong {
         start.run();
 
         scoreEntities.stream().filter(e -> e.side == Side.NONE).findFirst().get().setSide(Side.RIGHT);
-        if (scoreEntities.stream().filter(e -> e.side == Side.RIGHT).count() >= scoreToWin)
+        if (scoreEntities.stream().filter(e -> e.side == Side.RIGHT).count() >= scoreToWin){
           onWin.accept(Side.RIGHT);
+          graphicsEngine.dispose();
+          musicPlayer.stop();
+        }
       }
       if (ball.getPosition().x() + ball.getSize().x() > WIDTH) {
         audioPlayer.play(audioDataFactory.score());
         start.run();
         scoreEntities.stream().filter(e -> e.side == Side.NONE).findFirst().get().setSide(Side.LEFT);
-        if (scoreEntities.stream().filter(e -> e.side == Side.LEFT).count() >= scoreToWin)
+        if (scoreEntities.stream().filter(e -> e.side == Side.LEFT).count() >= scoreToWin){
           onWin.accept(Side.LEFT);
+          graphicsEngine.dispose();
+          musicPlayer.stop();
+        }
       }
     };
 
@@ -148,8 +157,7 @@ public class Pong {
         ball.setVelocity(ball.getVelocity().setAngle(newAngle));
       }
     };
-
-    var kernel = new Kernel(world, onUpdate, onPress, onRelease, onCollision);
+    var kernel = new Kernel(world, onUpdate, onPress, onRelease, onCollision, graphicsEngine);
     kernel.start();
   }
 }

@@ -19,14 +19,15 @@ public record Kernel(
     Runnable onUpdate,
     Consumer<KeyEvent> onPress,
     Consumer<KeyEvent> onRelease,
-    BiConsumer<PhysicsEntity, PhysicsEntity> collisionHandler) {
+    BiConsumer<PhysicsEntity, PhysicsEntity> collisionHandler,
+    SwingGraphicsEngine graphicsEngine) {
 
   private static final long PHYSICS_UPDATES_PER_SECOND = 120;
   private static final long FPS = 60;
 
+
   public void start() {
     var physicsEngine = new DefaultPhysicsEngine(collisionHandler);
-    var graphicsEngine = new SwingGraphicsEngine();
     graphicsEngine.ioEngine.setOnPress(onPress);
     graphicsEngine.ioEngine.setOnRelease(onRelease);
 
