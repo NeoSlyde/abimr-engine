@@ -22,7 +22,7 @@ public class MainMenu {
 
         f.add(scoreLabel);
 
-        JTextField tf = new JTextField("1");
+        JTextField tf = new JTextField("3");
         f.add(tf);
         tf.setBounds(350 - x_diff, 100 + y_diff, 150, 20);
 
